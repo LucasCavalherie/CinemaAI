@@ -4,15 +4,20 @@ struct ChatGptView: View {
     var type: String
     @State var inputText: String
     @State var response: [String]?
+    @State var showError: Bool = false
     @ObservedObject var dataMananger = DataManager.shared
         
     var body: some View {
         VStack {
             if let response = response {
-                if type == "Filmes" {
-                    FilmView(contents: response, type: type)
-                } else if type == "Séries" {
-                    SerieView(contents: response, type: type)
+                if !showError {
+                    if type == "Filmes" {
+                        FilmView(contents: response, type: type)
+                    } else if type == "Séries" {
+                        SerieView(contents: response, type: type)
+                    }
+                } else {
+                    ErrorView()
                 }
             } else {
 
@@ -105,7 +110,7 @@ struct ChatGptView: View {
             } else if let data = data {
                 let decoder = JSONDecoder()
                 do {
-                    _ = try JSONSerialization.jsonObject(with: data, options: [])
+//                    var jsonObject = try JSONSerialization.jsonObject(with: data, options: [])
 //                    print(jsonObject)
                     
                     let response = try decoder.decode(ChatGptResponse.self, from: data)
@@ -120,6 +125,7 @@ struct ChatGptView: View {
                         .map { String($0.trimmingCharacters(in: .whitespacesAndNewlines)) }
                     completion(filmes)
                 } catch {
+                    showError = true
                     print("Erro na decodificação: \(error)")
                 }
             }

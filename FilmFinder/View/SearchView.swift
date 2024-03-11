@@ -106,6 +106,7 @@ struct SearchView: View {
                                     .frame(width: 200, height: 40, alignment: .center)
                                     .background(Color("laranja"))
                                     .cornerRadius(16)
+                                    .disabled(message == "")
                                     
                                 }
                         } else {
